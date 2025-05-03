@@ -21,7 +21,6 @@ const ProductDetailPage = () => {
         setIsLoading(false);
       }
     };
-
     fetchProduct();
   }, [id]);
 
@@ -57,22 +56,40 @@ const ProductDetailPage = () => {
     );
   }
 
+  // Field name corrections based on Django model
+  const productTitle = product.title_en || product.name || '';
+  const productDescription = product.description_en || product.description || '';
+  
+  // Handle price safely
+  const formatPrice = (price) => {
+    // Check if price exists and is a number or can be converted to a number
+    if (price !== undefined && price !== null) {
+      // Convert to number if it's a string
+      const numericPrice = typeof price === 'string' ? parseFloat(price) : price;
+      // Check if conversion was successful
+      if (!isNaN(numericPrice)) {
+        return numericPrice.toFixed(2);
+      }
+    }
+    // Default case if price is invalid
+    return '0.00';
+  };
+
   return (
     <div className="container py-5">
       <nav aria-label="breadcrumb">
         <ol className="breadcrumb">
           <li className="breadcrumb-item"><Link to="/">Home</Link></li>
           <li className="breadcrumb-item"><Link to="/products">Products</Link></li>
-          <li className="breadcrumb-item active" aria-current="page">{product.name}</li>
+          <li className="breadcrumb-item active" aria-current="page">{productTitle}</li>
         </ol>
       </nav>
-
       <div className="row">
         <div className="col-md-6">
-          {product.image_url ? (
-            <img 
-              src={product.image_url} 
-              alt={product.name} 
+          {product.image ? (
+            <img
+              src={product.image}
+              alt={productTitle}
               className="img-fluid rounded"
               style={{ maxHeight: '400px', objectFit: 'cover' }}
             />
@@ -83,42 +100,33 @@ const ProductDetailPage = () => {
           )}
         </div>
         <div className="col-md-6">
-          <h1 className="mb-3">{product.name}</h1>
-          
+          <h1 className="mb-3">{productTitle}</h1>
           {product.brand && (
             <p className="mb-2">
-              <strong>Brand:</strong> <Link to={`/brands/${product.brand.id}`}>{product.brand.name}</Link>
+              <strong>Brand:</strong> <Link to={`/brands/${product.brand.id}`}>{product.brand.title_en || product.brand.name}</Link>
             </p>
           )}
-          
-          {product.collection && (
+          {product.collections && product.collections.length > 0 && (
             <p className="mb-2">
-              <strong>Collection:</strong> <Link to={`/collections/${product.collection.id}`}>{product.collection.name}</Link>
+              <strong>Collections:</strong> {product.collections.map((collection, index) => (
+                <span key={collection.id}>
+                  <Link to={`/collections/${collection.id}`}>{collection.title_en || collection.name}</Link>
+                  {index < product.collections.length - 1 ? ', ' : ''}
+                </span>
+              ))}
             </p>
           )}
-          
-          {product.price && (
-            <p className="fs-3 fw-bold text-primary">${product.price.toFixed(2)}</p>
-          )}
-          
-          {product.description && (
+          <p className="fs-3 fw-bold text-primary">${formatPrice(product.price)}</p>
+          {productDescription && (
             <div className="mb-4">
               <h5>Description</h5>
-              <p>{product.description}</p>
+              <p>{productDescription}</p>
             </div>
           )}
-          
-          {product.specifications && (
+          {product.category && (
             <div className="mb-4">
-              <h5>Specifications</h5>
-              <ul className="list-group">
-                {Object.entries(product.specifications).map(([key, value]) => (
-                  <li key={key} className="list-group-item d-flex justify-content-between">
-                    <span className="fw-bold">{key}</span>
-                    <span>{value}</span>
-                  </li>
-                ))}
-              </ul>
+              <h5>Category</h5>
+              <p>{product.category}</p>
             </div>
           )}
         </div>

@@ -1,32 +1,33 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
 
-const SearchBar = ({ onSearch }) => {
-  const [query, setQuery] = useState('');
-  const navigate = useNavigate();
+const SearchBar = ({ initialValue = '', onSearch }) => {
+  const [searchTerm, setSearchTerm] = useState(initialValue);
+
+  // Update searchTerm when initialValue changes (e.g., when navigating)
+  useEffect(() => {
+    setSearchTerm(initialValue);
+  }, [initialValue]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (query.trim()) {
-      if (onSearch) {
-        onSearch(query);
-      } else {
-        navigate(`/search?q=${encodeURIComponent(query)}`);
-      }
+    if (searchTerm.trim() && onSearch) {
+      onSearch(searchTerm);
     }
   };
 
   return (
-    <form className="d-flex" onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className="d-flex">
       <input
-        className="form-control me-2"
         type="search"
+        className="form-control me-2"
         placeholder="Search products, brands, collections..."
         aria-label="Search"
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
       />
-      <button className="btn btn-outline-light" type="submit">Search</button>
+      <button className="btn btn-primary" type="submit">
+        Search
+      </button>
     </form>
   );
 };

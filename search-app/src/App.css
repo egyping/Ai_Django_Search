@@ -1,0 +1,61 @@
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1;
+}
+
+/* Card styling */
+.card {
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Search bar styling */
+.search-wrapper {
+  position: relative;
+}
+
+/* Product image sizing */
+.product-img {
+  height: 200px;
+  object-fit: cover;
+}
+
+/* Pagination styling */
+.pagination .page-link {
+  color: #343a40;
+}
+
+.pagination .page-item.active .page-link {
+  background-color: #343a40;
+  border-color: #343a40;
+  color: white;
+}
+
+/* Add a custom hero section for the homepage */
+.hero-section {
+  background: linear-gradient(135deg, #6c757d 0%, #343a40 100%);
+  color: white;
+  padding: 5rem 0;
+  margin-bottom: 3rem;
+  text-align: center;
+}
+
+.hero-section h1 {
+  font-size: 3rem;
+  margin-bottom: 1.5rem;
+}
+
+.hero-section p {
+  font-size: 1.25rem;
+  max-width: 800px;
+  margin: 0 auto 2rem;
+}
